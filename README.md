@@ -11,5 +11,5 @@ This standalone repository hosts the public landing page for introducing and ins
   - Step-by-step AI planner
   - On-device speech recognition (Whisper)
   - Seamless canvas integration & embed support
-  - Chrome Web Store install links
+  - [Chrome Web Store Extension](https://chromewebstore.google.com/detail/viasocket-assistant/ikfeheokinklhegllmjkmjgjnmokfabb)
 
