@@ -860,3 +860,468 @@ kbd {
   text-align: center;
 }
 
+/* ==========================================================================
+   Motion Graphics Canvas & Interactive Flow Simulation
+   ========================================================================== */
+.motion-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+  transition: opacity 0.5s ease;
+}
+
+/* ==========================================================================
+   Full Green Page Intro Curtain Morph
+   ========================================================================== */
+.intro-curtain {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 9999;
+  background-color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  clip-path: circle(150% at 50% 50%);
+  transition: clip-path 0.95s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+  pointer-events: auto;
+}
+
+.intro-curtain.morphing {
+  clip-path: circle(28px at var(--target-x, 88vw) var(--target-y, 82vh));
+}
+
+.intro-curtain.morphed {
+  clip-path: circle(28px at var(--target-x, 88vw) var(--target-y, 82vh));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro-curtain-circle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.intro-eyes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  transform: scale(2.8);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+.intro-eye {
+  width: 8px;
+  height: 16px;
+  border-radius: 4px;
+  background-color: #04342c;
+  animation: introBlink 3.2s infinite ease-in-out;
+}
+
+@keyframes introBlink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
+.intro-overlay-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #07231c;
+  padding: 2rem;
+  transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.intro-curtain.morphing .intro-overlay-content,
+.intro-curtain.morphed .intro-overlay-content {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.92);
+}
+
+.intro-pill {
+  display: inline-block;
+  background: rgba(4, 52, 44, 0.12);
+  border: 1px solid rgba(4, 52, 44, 0.2);
+  color: #04342c;
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.intro-heading {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.intro-tagline {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 500;
+  color: rgba(4, 52, 44, 0.85);
+  margin-bottom: 2.5rem;
+}
+
+.intro-skip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: #04342c;
+  color: #5dcaa5;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(4, 52, 44, 0.25);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.intro-skip-btn:hover {
+  transform: translateY(-2px);
+  background-color: #02201b;
+}
+
+.intro-arrow {
+  animation: bounceDown 1.5s infinite ease-in-out;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+/* ==========================================================================
+   Autonomous Floating Mascot Companion (SOCKET)
+   ========================================================================== */
+.socket-companion {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 56px;
+  height: 56px;
+  z-index: 1000;
+  pointer-events: auto;
+  cursor: grab;
+  will-change: transform;
+  transform: translate3d(calc(100vw - 80px), calc(100vh - 90px), 0);
+  transition: opacity 0.4s ease;
+}
+
+.socket-companion.is-dragging {
+  cursor: grabbing;
+}
+
+.socket-companion.is-dragging .socket-thought {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.socket-bubble {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 25px var(--accent-glow);
+  transition: background-color 0.35s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  user-select: none;
+  touch-action: none;
+}
+
+.socket-bubble:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55), 0 0 35px var(--accent-glow);
+}
+
+.socket-bubble:active {
+  transform: scale(0.96);
+}
+
+/* Eyes */
+.socket-eye {
+  display: block;
+  width: 7px;
+  height: 11px;
+  border-radius: 3.5px;
+  background-color: #04342c;
+  transition: height 0.18s ease, background-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Soundwaves animation (Listening mode & Voice Simulation) */
+.socket-soundwaves {
+  position: absolute;
+  inset: -12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.socket-companion.mode-listening .socket-soundwaves,
+.socket-companion.simulating-voice .socket-soundwaves {
+  opacity: 1;
+}
+
+.socket-soundwaves .wave {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent-primary);
+  opacity: 0;
+  animation: pulseWave 1.8s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.socket-soundwaves .wave-2 {
+  animation-delay: 0.6s;
+}
+
+.socket-soundwaves .wave-3 {
+  animation-delay: 1.2s;
+}
+
+@keyframes pulseWave {
+  0% { transform: scale(0.7); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Speech / Thought Bubble */
+.socket-thought {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  right: -20px;
+  width: 280px;
+  background: rgba(16, 22, 24, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+  transform-origin: bottom right;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  z-index: 1001;
+}
+
+.socket-thought::after {
+  content: "";
+  position: absolute;
+  bottom: -7px;
+  right: 36px;
+  width: 12px;
+  height: 12px;
+  background: rgba(16, 22, 24, 0.94);
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  transform: rotate(45deg);
+}
+
+.thought-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.thought-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--accent-primary);
+}
+
+.thought-status {
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: var(--text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.thought-text {
+  font-size: 0.885rem;
+  line-height: 1.45;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.thought-hint {
+  font-size: 0.725rem;
+  color: var(--text-subtle);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 5px;
+}
+
+/* Replay Button in Nav */
+.btn-replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--accent-primary);
+}
+
+.btn-replay:hover {
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .replay-label {
+    display: none;
+  }
+  .socket-thought {
+    width: 240px;
+    right: -10px;
+  }
+}
+
+/* ==========================================================================
+   Reaction Mood States (Colors, Eyes & Animations)
+   ========================================================================== */
+
+/* 1. Idle (Sea green) */
+.socket-companion.mode-idle .socket-bubble {
+  background-color: #5dcaa5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 25px rgba(93, 202, 165, 0.28);
+}
+.socket-companion.mode-idle .socket-eye {
+  background-color: #04342c;
+  height: 11px;
+}
+
+/* 2. Listening (Coral) */
+.socket-companion.mode-listening .socket-bubble {
+  background-color: #f0997b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 25px rgba(240, 153, 123, 0.35);
+  animation: pulseScale 1.6s infinite ease-in-out;
+}
+.socket-companion.mode-listening .socket-eye {
+  background-color: #4a1b0c;
+  height: 11px;
+}
+.socket-companion.mode-listening .socket-soundwaves .wave {
+  border-color: #f0997b;
+}
+
+/* 3. Thinking (Lavender) */
+.socket-companion.mode-thinking .socket-bubble {
+  background-color: #afa9ec;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 25px rgba(175, 169, 236, 0.35);
+  animation: floatVertical 2.2s infinite ease-in-out;
+}
+.socket-companion.mode-thinking .socket-eye {
+  background-color: #26215c;
+  height: 9px;
+}
+
+/* 4. Working (Sky Blue) */
+.socket-companion.mode-working .socket-bubble {
+  background-color: #85b7eb;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 25px rgba(133, 183, 235, 0.35);
+}
+.socket-companion.mode-working .socket-eye {
+  background-color: #042c53;
+  height: 11px;
+}
+
+/* 5. Suggest (Amber) */
+.socket-companion.mode-suggest .socket-bubble {
+  background-color: #ef9f27;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 25px rgba(239, 159, 39, 0.35);
+}
+.socket-companion.mode-suggest .socket-eye {
+  background-color: #412402;
+  height: 11px;
+}
+
+/* 6. Error (Soft Red) */
+.socket-companion.mode-error .socket-bubble {
+  background-color: #f09595;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 25px rgba(240, 149, 149, 0.35);
+  animation: shakeX 0.4s ease-in-out;
+}
+.socket-companion.mode-error .socket-eye {
+  background-color: #501313;
+  height: 11px;
+}
+
+/* 7. Celebrate (Lime Green) */
+.socket-companion.mode-celebrate .socket-bubble {
+  background-color: #97c459;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 25px rgba(151, 196, 89, 0.4);
+  animation: bounceCelebrate 1.4s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
+}
+.socket-companion.mode-celebrate .socket-eye {
+  background-color: #173404;
+  height: 12px;
+}
+
+/* 8. Sleeping (Muted Gray) */
+.socket-companion.mode-sleeping .socket-bubble {
+  background-color: #b4b2a9;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+.socket-companion.mode-sleeping .socket-eye {
+  background-color: #2c2c2a;
+  height: 2px;
+}
+
+/* Micro-animations */
+@keyframes floatVertical {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes pulseScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+}
+
+@keyframes bounceCelebrate {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-14px) scale(1.05); }
+}
+
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* Reduced Motion Safety */
+@media (prefers-reduced-motion: reduce) {
+  .intro-curtain,
+  .socket-companion,
+  .socket-bubble,
+  .socket-soundwaves .wave {
+    animation: none !important;
+    transition: none !important;
+  }
+  .motion-canvas {
+    display: none;
+  }
+}
+
+
