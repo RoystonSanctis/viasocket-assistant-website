@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setTimeout(() => {
       curtain.classList.add('morphed');
-      companionController?.setMode('idle', "Hi! I'm SOCKET. Let's build your automations with voice & AI!");
+      companionController?.setMode('idle', "SOCKET active. Scroll through or click to test a voice command.");
     }, 950);
   }
 
@@ -279,9 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // 3. Double-click to unpin & resume auto-assist
       this.bubble.addEventListener('dblclick', () => {
         this.isPinned = false;
-        this.setMode('celebrate', 'Released! Resuming auto-assist.');
+        this.setMode('celebrate', 'Released. Resuming auto-assist.');
         setTimeout(() => {
-          this.setMode('idle', "I'm following along with your scroll!");
+          this.setMode('idle', 'Following along with your scroll.');
         }, 1500);
       });
 
@@ -297,23 +297,23 @@ document.addEventListener('DOMContentLoaded', () => {
       this.isSimulatingVoice = true;
 
       // Sequence: Listening -> Thinking -> Working -> Celebrate
-      this.setMode('listening', '🎙️ "Hey Socket, when a user signs up on Webhook, add them to HubSpot!"', true);
+      this.setMode('listening', '"When a user signs up via webhook, create a contact in HubSpot."', true);
 
       setTimeout(() => {
-        this.setMode('thinking', '🧠 Planning 2 steps: 1. Parse JSON payload → 2. Create HubSpot contact', true);
+        this.setMode('thinking', 'Planning 2 steps: parse JSON payload, then create HubSpot contact.', true);
       }, 2200);
 
       setTimeout(() => {
-        this.setMode('working', '⚡ Mapping email, name, and executing live test run...', true);
+        this.setMode('working', 'Mapping fields (email, name) and running step test...', true);
       }, 4400);
 
       setTimeout(() => {
-        this.setMode('celebrate', '🎉 Test passed! Contact created in HubSpot. Flow is ready!', true);
+        this.setMode('celebrate', 'Step test verified. HubSpot contact created successfully.', true);
       }, 6600);
 
       setTimeout(() => {
         this.isSimulatingVoice = false;
-        this.setMode('idle', "Click me anytime to simulate another voice command, or drag to park!");
+        this.setMode('idle', 'Ready. Click to simulate another action or drag to park.');
       }, 9200);
     }
 

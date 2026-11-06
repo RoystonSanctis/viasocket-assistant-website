@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>viaSocket Assistant — Voice-First AI Companion for Automations</title>
+  <title>viaSocket Assistant — Voice and Canvas AI for viaSocket</title>
   <meta name="description"
-    content="Meet SOCKET: an on-canvas AI mascot that plans, builds, tests, and refines your viaSocket workflows using natural voice and chat.">
+    content="SOCKET is an on-canvas assistant that plans, configures, tests, and refines your viaSocket workflows using voice and conversation.">
   <link rel="icon" type="image/png" href="assets/icon-128.png">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,10 +14,6 @@
 <body>
   <!-- Background Canvas for Connected Flow Particles & Motion Graphics -->
   <canvas id="motion-canvas" class="motion-canvas" aria-hidden="true"></canvas>
-
-  <!-- Ambient background lighting -->
-  <div class="ambient-glow glow-top" aria-hidden="true"></div>
-  <div class="ambient-glow glow-bottom" aria-hidden="true"></div>
 
   <!-- Full-Page Green Intro Curtain (Morphs from full viewport to Mascot circle) -->
   <div id="intro-curtain" class="intro-curtain" aria-label="Intro Animation">
@@ -29,11 +25,11 @@
         </div>
       </div>
       <span class="intro-pill">viaSocket Assistant</span>
-      <h2 class="intro-heading">Meet SOCKET.</h2>
-      <p class="intro-tagline">Your voice-first workflow assistant</p>
+      <h2 class="intro-heading">Meet SOCKET</h2>
+      <p class="intro-tagline">Your on-canvas workflow companion</p>
       <button class="intro-skip-btn" id="intro-start-btn">
-        <span>Scroll to Explore</span>
-        <span class="intro-arrow">↓</span>
+        <span>Explore the Assistant</span>
+        <span class="intro-arrow">&darr;</span>
       </button>
     </div>
   </div>
@@ -54,8 +50,8 @@
         <span class="thought-badge">SOCKET</span>
         <span class="thought-status" id="socket-status">Idle</span>
       </div>
-      <div class="thought-text" id="socket-thought-text">Hi! I'm SOCKET. Scroll down and I'll assist you!</div>
-      <div class="thought-hint">Click me to simulate voice • Drag to park</div>
+      <div class="thought-text" id="socket-thought-text">Hi, I'm SOCKET. Scroll down and I'll walk through the features.</div>
+      <div class="thought-hint">Click to simulate voice &bull; Drag to park</div>
     </div>
   </aside>
 
@@ -63,7 +59,7 @@
   <header class="site-header">
     <div class="container nav-container">
       <a href="#" class="brand-link">
-        <img src="assets/icon-128.png" alt="SOCKET Logo" class="brand-logo" width="36" height="36">
+        <img src="assets/icon-128.png" alt="SOCKET Logo" class="brand-logo" width="32" height="32">
         <span class="brand-text">viaSocket <strong>Assistant</strong></span>
       </a>
 
@@ -75,13 +71,14 @@
       </nav>
 
       <div class="nav-actions">
-        <button id="btn-replay-intro" class="btn btn-ghost btn-replay" title="Replay SOCKET intro animation" aria-label="Replay SOCKET intro animation">
-          <svg class="icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+        <button id="btn-replay-intro" class="btn btn-ghost btn-replay" title="Replay SOCKET intro animation"
+          aria-label="Replay SOCKET intro animation">
+          <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           <span class="replay-label">Replay Intro</span>
         </button>
         <a href="https://github.com/RoystonSanctis/viasocket-assistant" target="_blank" rel="noopener noreferrer"
-          class="btn btn-ghost">
-          <svg class="icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          class="btn btn-secondary">
+          <svg class="icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path
               d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
           </svg>
@@ -89,10 +86,6 @@
         </a>
         <a href="https://chromewebstore.google.com/detail/viasocket-assistant/ikfeheokinklhegllmjkmjgjnmokfabb"
           target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-          <svg class="icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-            <path
-              d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4.5a7.5 7.5 0 016.928 4.643H9.72a3.75 3.75 0 00-2.363 2.143L4.78 6.964A7.472 7.472 0 0112 4.5zm-8.25 7.5c0-.623.08-1.228.228-1.804l3.652 6.326A3.75 3.75 0 0010.5 18H5.072A7.473 7.473 0 013.75 12zm8.25 7.5c-1.42 0-2.723-.4-3.83-1.087l3.652-6.326a3.75 3.75 0 003.83 0l3.652 6.326A7.473 7.473 0 0112 19.5zm7.178-5.696L15.526 7.478A3.75 3.75 0 0013.5 6h5.428a7.472 7.472 0 01.25 3.804c-.214 1.43-.88 2.705-1.928 3.696z" />
-          </svg>
           Add to Chrome
         </a>
       </div>
@@ -101,31 +94,26 @@
 
   <!-- Hero Section -->
   <main>
-    <section id="hero" class="hero-section" data-assist-mode="idle" data-assist-thought="Hi! I'm SOCKET. Let's build your automations with voice &amp; AI.">
+    <section id="hero" class="hero-section" data-assist-mode="idle"
+      data-assist-thought="Hi, I'm SOCKET. Let's inspect and build workflows on your canvas.">
       <div class="container hero-content">
         <div class="badge-pill">
-          <span class="badge-dot"></span>
-          <span class="badge-text">v0.5.0 Released • Voice-First AI Companion</span>
+          <span class="badge-text">v0.5.0 now available for Chrome</span>
         </div>
 
         <h1 class="hero-title">
           Build viaSocket flows <br class="title-br">
-          <span class="text-gradient">at the speed of thought.</span>
+          with on-canvas voice and AI
         </h1>
 
         <p class="hero-subtitle">
-          Meet <strong>SOCKET</strong> — the on-canvas AI assistant that plans, configures, tests, and refines complex
-          automations through hands-free voice and interactive conversation.
+          SOCKET plans, configures, tests, and refines your automations through voice and conversation, right on the flow canvas.
         </p>
 
         <div class="hero-cta-group">
           <a href="https://chromewebstore.google.com/detail/viasocket-assistant/ikfeheokinklhegllmjkmjgjnmokfabb"
-            target="_blank" rel="noopener noreferrer" class="btn btn-lg btn-primary shadow-glow">
-            <svg class="icon-svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <path
-                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4.5a7.5 7.5 0 016.928 4.643H9.72a3.75 3.75 0 00-2.363 2.143L4.78 6.964A7.472 7.472 0 0112 4.5zm-8.25 7.5c0-.623.08-1.228.228-1.804l3.652 6.326A3.75 3.75 0 0010.5 18H5.072A7.473 7.473 0 013.75 12zm8.25 7.5c-1.42 0-2.723-.4-3.83-1.087l3.652-6.326a3.75 3.75 0 003.83 0l3.652 6.326A7.473 7.473 0 0112 19.5zm7.178-5.696L15.526 7.478A3.75 3.75 0 0013.5 6h5.428a7.472 7.472 0 01.25 3.804c-.214 1.43-.88 2.705-1.928 3.696z" />
-            </svg>
-            Add to Chrome — Free
+            target="_blank" rel="noopener noreferrer" class="btn btn-lg btn-primary">
+            Add to Chrome
           </a>
           <a href="#how-it-works" class="btn btn-lg btn-secondary">
             See How It Works
@@ -134,20 +122,20 @@
 
         <div class="hero-trust-bar">
           <div class="trust-item">
-            <span class="trust-icon">🎙️</span>
+            <svg class="trust-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
             <span>On-Device Whisper STT</span>
           </div>
           <div class="trust-item">
-            <span class="trust-icon">🧠</span>
-            <span>Plans Before Mutating</span>
+            <svg class="trust-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+            <span>Plans Before Modifying</span>
           </div>
           <div class="trust-item">
-            <span class="trust-icon">🔒</span>
-            <span>Bring Your Own Key</span>
+            <svg class="trust-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Bring Your Own Keys</span>
           </div>
           <div class="trust-item">
-            <span class="trust-icon">⚡</span>
-            <span>Flows &amp; Embeds</span>
+            <svg class="trust-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            <span>Flows and Embeds</span>
           </div>
         </div>
 
@@ -169,33 +157,33 @@
     </section>
 
     <!-- Key Highlights / Grid -->
-    <section id="features" class="section features-section" data-assist-mode="working" data-assist-thought="I observe the open canvas, detect steps, and wire inputs in real time.">
+    <section id="features" class="section features-section" data-assist-mode="working"
+      data-assist-thought="I observe the open canvas, detect steps, and wire inputs in real time.">
       <div class="container">
         <div class="section-header text-center">
-          <p class="section-tag">Supercharge Your Automation Workflow</p>
-          <h2 class="section-title">Designed for Builders, Developers &amp; Teams</h2>
-          <p class="section-subtitle">No more clicking through dozens of nested modals. Just tell SOCKET what you want
-            to connect.</p>
+          <p class="section-tag">Features</p>
+          <h2 class="section-title">Designed for builders, developers, and teams</h2>
+          <p class="section-subtitle">Describe what you want to connect. SOCKET inspects the canvas and drafts the steps.</p>
         </div>
 
         <!-- Interactive Feature Showcase -->
         <div class="showcase-card">
           <div class="showcase-nav" role="tablist">
             <button class="showcase-tab active" role="tab" aria-selected="true" data-tab="plan">
-              <span class="tab-icon">🧠</span>
+              <svg class="tab-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
               <span class="tab-label">Plans First</span>
             </button>
             <button class="showcase-tab" role="tab" aria-selected="false" data-tab="subfunctions">
-              <span class="tab-icon">⚡</span>
-              <span class="tab-label">Subfunctions &amp; JS</span>
+              <svg class="tab-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span class="tab-label">Subfunctions and JS</span>
             </button>
             <button class="showcase-tab" role="tab" aria-selected="false" data-tab="inputs">
-              <span class="tab-icon">🧩</span>
+              <svg class="tab-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="6" height="6" rx="1"/><rect x="16" y="3" width="6" height="6" rx="1"/><rect x="9" y="15" width="6" height="6" rx="1"/><path d="M5 9v3a2 2 0 0 0 2 2h2m6 0h2a2 2 0 0 0 2-2V9"/></svg>
               <span class="tab-label">Live Data Mapping</span>
             </button>
             <button class="showcase-tab" role="tab" aria-selected="false" data-tab="copypaste">
-              <span class="tab-icon">📋</span>
-              <span class="tab-label">Copy, Paste &amp; Export</span>
+              <svg class="tab-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span class="tab-label">Copy, Paste and Export</span>
             </button>
           </div>
 
@@ -204,12 +192,11 @@
               <div class="panel-info">
                 <h3>Plans before it builds</h3>
                 <p>Describe your automation in plain language. SOCKET breaks down the goal into an actionable checklist
-                  (trigger, actions, test dry-run, publishing) and waits for your confirmation before changing your
-                  flow.</p>
+                  with trigger, actions, dry-run test, and publishing, waiting for confirmation before changing the flow.</p>
                 <ul class="feature-bullets">
-                  <li>Transparent checklist showing every step and variable</li>
+                  <li>Transparent checklist showing every proposed step and variable</li>
                   <li>Prevents unintended overwrites or broken states</li>
-                  <li>Say "Looks good, start" to execute in seconds</li>
+                  <li>Review the plan and approve with voice or text</li>
                 </ul>
               </div>
               <div class="panel-media">
@@ -220,12 +207,12 @@
             <div class="showcase-panel" id="panel-subfunctions">
               <div class="panel-info">
                 <h3>Native Subfunctions in JS Steps</h3>
-                <p>Combine the speed of low-code connectors with custom JavaScript. SOCKET inserts app actions straight
+                <p>Combine the speed of prebuilt connectors with custom JavaScript. SOCKET inserts app actions straight
                   into your JS code, automatically wiring dropdown selections and variable mappings.</p>
                 <ul class="feature-bullets">
-                  <li>Full form builder inside JavaScript code blocks</li>
+                  <li>Form builder inside JavaScript code blocks</li>
                   <li>Keeps UI inputs and code variables synchronized</li>
-                  <li>Instant "Beautify" formatter for clean, formatted syntax</li>
+                  <li>Format code cleanly with one-click beautify</li>
                 </ul>
               </div>
               <div class="panel-media">
@@ -238,7 +225,7 @@
               <div class="panel-info">
                 <h3>Tests as it goes with real data</h3>
                 <p>SOCKET inspects real responses from previous steps, mapping accurate payload keys instead of
-                  guesswork. Dangerous steps (sending emails, modifying records) always ask permission first.</p>
+                  guesswork. Sensitive actions like sending emails or updating records ask permission first.</p>
                 <ul class="feature-bullets">
                   <li>Context-aware variable suggestions from previous executions</li>
                   <li>Interactive run log inspection and troubleshooting</li>
@@ -253,12 +240,12 @@
 
             <div class="showcase-panel" id="panel-copypaste">
               <div class="panel-info">
-                <h3>Copy, Paste, Export &amp; Import</h3>
-                <p>Move whole configurations effortlessly. Copy steps across workflows, clone complex conditionals, or
+                <h3>Copy, Paste, Export, and Import</h3>
+                <p>Move configurations effortlessly. Copy steps across workflows, duplicate conditionals, or
                   export entire flows to clean JSON files to import anywhere.</p>
                 <ul class="feature-bullets">
                   <li>Canvas context menu for fast duplication</li>
-                  <li>Export/Import flows between accounts or environments</li>
+                  <li>Export and import flows between accounts or environments</li>
                   <li>Works identically in Developer Hub plugs</li>
                 </ul>
               </div>
@@ -272,114 +259,126 @@
         <!-- 6 Feature Cards -->
         <div class="features-grid">
           <div class="feature-box">
-            <div class="box-icon">🎙️</div>
+            <div class="box-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            </div>
             <h4>Hands-Free Voice Input</h4>
-            <p>Hold <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> or simply say "Hey Socket". High-accuracy on-device
-              speech-to-text ensures zero latency without sending your audio to external servers.</p>
+            <p>Hold <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> or say "Hey Socket". On-device speech recognition runs locally in WebAssembly with zero audio transmission to external servers.</p>
           </div>
 
           <div class="feature-box">
-            <div class="box-icon">👀</div>
-            <h4>Sees What You See</h4>
-            <p>SOCKET reads your open canvas, selected step, and recent execution errors, so you never have to
-              re-explain context or paste messy JSON logs into chat.</p>
+            <div class="box-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <h4>Canvas Awareness</h4>
+            <p>SOCKET reads your open canvas, selected step, and execution errors directly, avoiding the need to paste raw logs or step IDs into chat.</p>
           </div>
 
           <div class="feature-box">
-            <div class="box-icon">🤖</div>
+            <div class="box-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+            </div>
             <h4>Bring Your Own AI</h4>
-            <p>Connect your preferred model using your own API key: OpenAI (GPT-4o), Anthropic (Claude 3.5 Sonnet),
-              Google (Gemini 1.5 Pro), Groq, OpenRouter, or local models via Ollama.</p>
+            <p>Connect your preferred model with your own key: OpenAI, Anthropic, Gemini, Groq, OpenRouter, or local models running on your machine via Ollama.</p>
           </div>
 
           <div class="feature-box">
-            <div class="box-icon">🌐</div>
+            <div class="box-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
             <h4>Embed Anywhere Support</h4>
-            <p>Using viaSocket embedded inside your SaaS or client portal? SOCKET automatically detects embed iframes
-              across any host domain and mounts seamlessly.</p>
+            <p>When viaSocket is embedded inside host applications or SaaS portals, SOCKET automatically identifies the embed iframe and mounts directly inside it.</p>
           </div>
 
           <div class="feature-box">
-            <div class="box-icon">🛠️</div>
+            <div class="box-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            </div>
             <h4>Developer Hub Ready</h4>
-            <p>Build custom plugs, triggers, authentication handshakes, and API components in Developer Hub with
-              SOCKET's guided code generation.</p>
+            <p>Build custom plugs, triggers, authentication handshakes, and API components in Developer Hub with guided code assistance.</p>
           </div>
 
           <div class="feature-box">
-            <div class="box-icon">🔒</div>
-            <h4>Privacy By Design</h4>
-            <p>Zero telemetry, no trackers, and no third-party databases. Sensitive API keys and workflow credentials
-              never leave your browser profile.</p>
+            <div class="box-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h4>Private by Design</h4>
+            <p>No telemetry, no tracking, and no external databases. API keys and workflow session tokens remain stored securely in your browser profile.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- How It Works -->
-    <section id="how-it-works" class="section how-it-works-section" data-assist-mode="celebrate" data-assist-thought="Step test passed! Live data mapped and ready to publish.">
+    <section id="how-it-works" class="section how-it-works-section" data-assist-mode="celebrate"
+      data-assist-thought="Step test passed. Live data mapped and ready to publish.">
       <div class="container">
         <div class="section-header text-center">
-          <p class="section-tag">Zero Learning Curve</p>
-          <h2 class="section-title">How It Works in 3 Steps</h2>
+          <p class="section-tag">Walkthrough</p>
+          <h2 class="section-title">How it works in three steps</h2>
         </div>
 
         <div class="steps-container">
           <div class="step-card">
             <div class="step-number">1</div>
             <h3>Install the Extension</h3>
-            <p>Add viaSocket Assistant to Chrome. Open any flow on <code>flow.viasocket.com</code> or any embed portal.
-              SOCKET the mascot appears right on your canvas.</p>
+            <p>Add viaSocket Assistant to Chrome. Open any workflow on <code>flow.viasocket.com</code> or an embedded portal. SOCKET appears on the canvas.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">2</div>
             <h3>Say or Type Your Intent</h3>
-            <p>Click SOCKET or hit your shortcut. E.g., <em>"When an order is created on Shopify, check stock in
-                Airtable, then send a Slack alert if inventory is low."</em></p>
+            <p>Click SOCKET or press your shortcut, for example: <em>"When an order is created on Shopify, check stock in Airtable, then send a Slack alert if inventory is low."</em></p>
           </div>
 
           <div class="step-card">
             <div class="step-number">3</div>
-            <h3>Review &amp; Watch It Build</h3>
-            <p>Review the generated plan and variables. Say <em>"Looks good"</em> and watch SOCKET add the steps,
-              connect the APIs, format code, and test the flow.</p>
+            <h3>Review and Build</h3>
+            <p>Review the generated plan and data mappings. Confirm the plan, and watch SOCKET add the steps, connect the APIs, format code, and run tests.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Privacy & Security -->
-    <section id="privacy" class="section privacy-section" data-assist-mode="suggest" data-assist-thought="Your API keys and workflow data stay encrypted on your device.">
+    <section id="privacy" class="section privacy-section" data-assist-mode="suggest"
+      data-assist-thought="Your API keys and workflow data stay encrypted on your device.">
       <div class="container">
         <div class="privacy-banner">
-          <div class="privacy-badge">🔒 Open Source &amp; Private by Design</div>
-          <h2>Your Credentials &amp; Data Stay Yours</h2>
+          <div class="privacy-badge">Open Source and Private by Design</div>
+          <h2>Your credentials and data stay yours</h2>
           <p class="privacy-lead">
-            viaSocket Assistant has no centralized database, collects zero analytics, and runs on the <strong>Principle
-              of Least Privilege</strong>.
+            viaSocket Assistant has no centralized database, collects zero analytics, and runs on the principle of least privilege.
           </p>
 
           <div class="privacy-points-grid">
             <div class="privacy-point">
-              <h4>🛡️ Local Key Storage</h4>
-              <p>AI provider keys are stored in your browser's encrypted IndexedDB and only accessible to the background
-                service worker.</p>
+              <div class="point-header">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <h4>Local Key Storage</h4>
+              </div>
+              <p>AI provider keys are stored in your browser's encrypted IndexedDB and only accessible to the background service worker.</p>
             </div>
             <div class="privacy-point">
-              <h4>🎙️ On-Device Audio</h4>
-              <p>Voice is transcribed in-browser via WebAssembly Whisper by default. Microphone stream is dropped
-                immediately upon tab blur.</p>
+              <div class="point-header">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                <h4>On-Device Audio</h4>
+              </div>
+              <p>Voice is transcribed in-browser via WebAssembly Whisper by default. Microphone stream is dropped immediately upon tab blur.</p>
             </div>
             <div class="privacy-point">
-              <h4>📦 Scoped Host Permissions</h4>
-              <p>The extension communicates strictly with viaSocket domains and your chosen AI provider endpoint. No
-                global web snooping.</p>
+              <div class="point-header">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                <h4>Scoped Host Permissions</h4>
+              </div>
+              <p>The extension communicates strictly with viaSocket domains and your chosen AI provider endpoint. No global web access.</p>
             </div>
             <div class="privacy-point">
-              <h4>📜 AGPL-3.0 License</h4>
-              <p>Fully auditable open-source code. Inspect every network call, storage operation, and tool action
-                directly on GitHub.</p>
+              <div class="point-header">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+                <h4>AGPL-3.0 License</h4>
+              </div>
+              <p>Fully auditable open-source code. Inspect every network call, storage operation, and tool action directly on GitHub.</p>
             </div>
           </div>
 
@@ -392,23 +391,22 @@
     </section>
 
     <!-- FAQ -->
-    <section id="faq" class="section faq-section" data-assist-mode="thinking" data-assist-thought="Got questions? I'm 100% free, private, and open-source under AGPL-3.0.">
+    <section id="faq" class="section faq-section" data-assist-mode="thinking"
+      data-assist-thought="Got questions? I'm free, private, and open-source under AGPL-3.0.">
       <div class="container faq-container">
         <div class="section-header text-center">
-          <p class="section-tag">Got Questions?</p>
-          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-tag">FAQ</p>
+          <h2 class="section-title">Frequently asked questions</h2>
         </div>
 
         <div class="accordion">
           <details class="accordion-item" open>
             <summary class="accordion-header">
-              <span>Is viaSocket Assistant completely free?</span>
+              <span>Is viaSocket Assistant free?</span>
               <span class="accordion-icon">+</span>
             </summary>
             <div class="accordion-content">
-              <p>Yes! The extension is 100% free and open-source under the AGPL-3.0 license. You only need your own API
-                key for your chosen AI provider (such as OpenAI, Anthropic, Gemini, Groq, or free local models via
-                Ollama).</p>
+              <p>Yes. The extension is open-source under the AGPL-3.0 license. You only need an API key for your chosen AI provider (such as OpenAI, Anthropic, Gemini, Groq, or local models via Ollama).</p>
             </div>
           </details>
 
@@ -418,9 +416,7 @@
               <span class="accordion-icon">+</span>
             </summary>
             <div class="accordion-content">
-              <p>Yes. Starting in version 0.5.0, viaSocket Assistant natively runs inside
-                <code>embedfrontend.viasocket.com</code> iframes across any host domain (like client portals or SaaS
-                dashboards) with full voice and chat capabilities.</p>
+              <p>Yes. viaSocket Assistant natively runs inside <code>embedfrontend.viasocket.com</code> iframes across any host domain with voice and chat capabilities.</p>
             </div>
           </details>
 
@@ -430,9 +426,7 @@
               <span class="accordion-icon">+</span>
             </summary>
             <div class="accordion-content">
-              <p>You can configure OpenAI (GPT-4o, GPT-4o-mini), Anthropic (Claude 3.5 Sonnet), Google (Gemini 1.5
-                Pro/Flash), Groq (Llama 3.3), OpenRouter, or any self-hosted OpenAI-compatible endpoint like Ollama or
-                vLLM.</p>
+              <p>You can configure OpenAI (GPT-4o, GPT-4o-mini), Anthropic (Claude 3.5 Sonnet), Google (Gemini 1.5 Pro/Flash), Groq (Llama 3.3), OpenRouter, or any self-hosted OpenAI-compatible endpoint like Ollama or vLLM.</p>
             </div>
           </details>
 
@@ -442,21 +436,17 @@
               <span class="accordion-icon">+</span>
             </summary>
             <div class="accordion-content">
-              <p>By default, speech recognition runs client-side using an ONNX-optimized Whisper model inside an
-                offscreen WebAssembly worker. Audio never leaves your device. You can also toggle browser-native speech
-                recognition in the settings.</p>
+              <p>By default, speech recognition runs client-side using an ONNX-optimized Whisper model inside an offscreen WebAssembly worker. Audio never leaves your device. You can also toggle browser-native speech recognition in the settings.</p>
             </div>
           </details>
 
           <details class="accordion-item">
             <summary class="accordion-header">
-              <span>Can SOCKET delete or break my existing workflows?</span>
+              <span>Can SOCKET delete or overwrite existing workflows?</span>
               <span class="accordion-icon">+</span>
             </summary>
             <div class="accordion-content">
-              <p>No. SOCKET presents a transparent plan before making any modifications and asks for your confirmation.
-                Dangerous actions (deleting steps, publishing to production, sending real webhooks) require explicit
-                approval.</p>
+              <p>No. SOCKET presents a transparent plan before making modifications and asks for your confirmation. Mutating steps or publishing changes requires approval.</p>
             </div>
           </details>
         </div>
@@ -466,12 +456,12 @@
     <!-- Bottom CTA Bar -->
     <section class="bottom-cta-section">
       <div class="container text-center">
-        <h2>Ready to build workflows in seconds?</h2>
-        <p class="cta-subtitle">Install viaSocket Assistant today and start automating with voice and AI.</p>
+        <h2>Start building workflows on viaSocket</h2>
+        <p class="cta-subtitle">Install the extension and automate with voice and AI directly on the canvas.</p>
         <div class="hero-cta-group justify-center">
           <a href="https://chromewebstore.google.com/detail/viasocket-assistant/ikfeheokinklhegllmjkmjgjnmokfabb"
-            target="_blank" rel="noopener noreferrer" class="btn btn-lg btn-primary shadow-glow">
-            Add to Chrome — Free
+            target="_blank" rel="noopener noreferrer" class="btn btn-lg btn-primary">
+            Add to Chrome
           </a>
           <a href="https://github.com/RoystonSanctis/viasocket-assistant" target="_blank" rel="noopener noreferrer"
             class="btn btn-lg btn-secondary">
@@ -483,7 +473,8 @@
   </main>
 
   <!-- Footer -->
-  <footer class="site-footer" data-assist-mode="sleeping" data-assist-thought="zzz... Wake me up whenever you're ready to build!">
+  <footer class="site-footer" data-assist-mode="sleeping"
+    data-assist-thought="zzz... Wake me up whenever you're ready to build.">
     <div class="container footer-container">
       <div class="footer-brand">
         <div class="brand-link">
