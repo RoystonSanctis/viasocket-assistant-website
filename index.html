@@ -8,7 +8,7 @@
   <meta name="description"
     content="SOCKET is an on-canvas assistant that plans, configures, tests, and refines your viaSocket workflows using voice and conversation.">
   <link rel="icon" type="image/png" href="assets/icon-128.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 
 <body>
@@ -48,46 +48,67 @@
     <div class="socket-thought" id="socket-thought">
       <div class="thought-header">
         <span class="thought-badge">SOCKET</span>
-        <span class="thought-status" id="socket-status">Idle</span>
+        <div class="thought-header-actions">
+          <span class="thought-status" id="socket-status">Idle</span>
+          <button class="thought-close-btn" id="thought-close-btn" aria-label="Dismiss speech bubble" title="Dismiss">&times;</button>
+        </div>
       </div>
-      <div class="thought-text" id="socket-thought-text">Hi, I'm SOCKET. Scroll down and I'll walk through the features.</div>
+      <div class="thought-text" id="socket-thought-text">SOCKET active. Scroll through or click to test a voice command.</div>
       <div class="thought-hint">Click to simulate voice &bull; Drag to park</div>
     </div>
   </aside>
 
   <!-- Header / Navigation -->
-  <header class="site-header">
+  <header class="site-header" id="site-header">
     <div class="container nav-container">
       <a href="#" class="brand-link">
-        <img src="assets/icon-128.png" alt="SOCKET Logo" class="brand-logo" width="32" height="32">
+        <img src="assets/icon-128.png" alt="SOCKET Logo" class="brand-logo" width="30" height="30">
         <span class="brand-text">viaSocket <strong>Assistant</strong></span>
       </a>
 
-      <nav class="nav-links" aria-label="Main Navigation">
-        <a href="#features">Features</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#privacy">Privacy</a>
-        <a href="#faq">FAQ</a>
+      <nav class="nav-links" id="nav-links" aria-label="Main Navigation">
+        <a href="#features" class="nav-link-item">Features</a>
+        <a href="#how-it-works" class="nav-link-item">How It Works</a>
+        <a href="#privacy" class="nav-link-item">Privacy</a>
+        <a href="#faq" class="nav-link-item">FAQ</a>
+        <div class="mobile-nav-extras">
+          <button id="btn-replay-intro-mobile" class="btn btn-ghost mobile-extra-btn" title="Replay intro animation">
+            <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <span>Replay Intro Animation</span>
+          </button>
+          <a href="https://github.com/RoystonSanctis/viasocket-assistant" target="_blank" rel="noopener noreferrer"
+            class="btn btn-secondary mobile-extra-btn">
+            <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            <span>GitHub Repository</span>
+          </a>
+        </div>
       </nav>
 
       <div class="nav-actions">
-        <button id="btn-replay-intro" class="btn btn-ghost btn-replay" title="Replay SOCKET intro animation"
+        <button id="btn-replay-intro" class="btn btn-ghost btn-replay desktop-only" title="Replay SOCKET intro animation"
           aria-label="Replay SOCKET intro animation">
           <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-          <span class="replay-label">Replay Intro</span>
+          <span class="replay-label">Replay</span>
         </button>
         <a href="https://github.com/RoystonSanctis/viasocket-assistant" target="_blank" rel="noopener noreferrer"
-          class="btn btn-secondary">
-          <svg class="icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          class="btn btn-secondary btn-github desktop-only" title="GitHub Repository">
+          <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
             <path
               d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
           </svg>
-          GitHub
+          <span class="btn-gh-label">GitHub</span>
         </a>
         <a href="https://chromewebstore.google.com/detail/viasocket-assistant/ikfeheokinklhegllmjkmjgjnmokfabb"
-          target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          target="_blank" rel="noopener noreferrer" class="btn btn-primary nav-cta">
           Add to Chrome
         </a>
+        <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <svg class="icon-hamburger" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg class="icon-close" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
     </div>
   </header>
@@ -514,7 +535,7 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=2"></script>
 </body>
 
 </html>

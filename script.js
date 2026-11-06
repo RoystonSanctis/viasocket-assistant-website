@@ -65,7 +65,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Smooth scroll offset adjustments for sticky header
+  // Smooth scroll offset adjustments for sticky header & mobile menu close
+  const siteHeader = document.getElementById('site-header');
+  const navToggle = document.getElementById('nav-toggle');
+
+  navToggle?.addEventListener('click', () => {
+    const isOpen = siteHeader.classList.toggle('nav-open');
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', function (e) {
       const targetId = this.getAttribute('href');
@@ -74,8 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetEl = document.querySelector(targetId);
       if (targetEl) {
         e.preventDefault();
-        const headerHeight = document.querySelector('.site-header')?.offsetHeight || 70;
-        const targetPos = targetEl.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+        siteHeader?.classList.remove('nav-open');
+        navToggle?.setAttribute('aria-expanded', 'false');
+
+        const headerHeight = siteHeader?.offsetHeight || 64;
+        const targetPos = targetEl.getBoundingClientRect().top + window.pageYOffset - headerHeight - 12;
         window.scrollTo({
           top: targetPos,
           behavior: 'smooth',
@@ -137,13 +148,20 @@ document.addEventListener('DOMContentLoaded', () => {
     { passive: true },
   );
 
-  replayBtn?.addEventListener('click', () => {
+  const replayBtnMobile = document.getElementById('btn-replay-intro-mobile');
+
+  function handleReplay() {
+    siteHeader?.classList.remove('nav-open');
+    navToggle?.setAttribute('aria-expanded', 'false');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (curtain) {
       curtain.classList.remove('morphed', 'morphing');
       hasMorphed = false;
     }
-  });
+  }
+
+  replayBtn?.addEventListener('click', handleReplay);
+  replayBtnMobile?.addEventListener('click', handleReplay);
 
   // =========================================================================
   // 3. Autonomous Mascot Companion Controller (Physics, Expressions, Drag)
@@ -152,8 +170,10 @@ document.addEventListener('DOMContentLoaded', () => {
     constructor(el) {
       this.el = el;
       this.bubble = el.querySelector('#socket-bubble');
+      this.thoughtEl = el.querySelector('#socket-thought');
       this.thoughtText = el.querySelector('#socket-thought-text');
       this.statusText = el.querySelector('#socket-status');
+      this.closeBtn = el.querySelector('#thought-close-btn');
       this.eyes = el.querySelectorAll('.socket-eye');
 
       // State
@@ -163,13 +183,16 @@ document.addEventListener('DOMContentLoaded', () => {
       this.isSimulatingVoice = false;
 
       // Position (Viewport Coordinates)
-      this.x = window.innerWidth - 84;
-      this.y = window.innerHeight - 96;
+      const isMobile = window.innerWidth < 768;
+      this.x = isMobile ? window.innerWidth - 60 : window.innerWidth - 84;
+      this.y = isMobile ? window.innerHeight - 72 : window.innerHeight - 96;
       this.tx = this.x;
       this.ty = this.y;
 
-      // Drag offsets
+      // Drag offsets & pointer tracking
       this.dragOffset = { x: 0, y: 0 };
+      this.pointerStartPos = { x: 0, y: 0 };
+      this.hasPointerMoved = false;
 
       // Typing animation
       this.typingTimer = null;
@@ -198,6 +221,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
           this.thoughtText.style.opacity = '1';
         }, 50);
+
+        // On mobile, if previously dismissed, unhide when state changes
+        if (this.thoughtEl && this.thoughtEl.classList.contains('is-hidden')) {
+          this.thoughtEl.classList.remove('is-hidden');
+        }
       }
 
       // If sleeping, set eyes to slit
@@ -214,13 +242,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setTargetPosition(x, y) {
       if (this.isPinned || this.isDragging) return;
-      // Keep within viewport boundaries with padding
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        // On mobile, anchor at bottom-right corner to prevent covering page content
+        this.tx = window.innerWidth - 60;
+        this.ty = window.innerHeight - 72;
+        return;
+      }
       const pad = 24;
       this.tx = Math.max(pad, Math.min(window.innerWidth - 76, x));
       this.ty = Math.max(pad + 70, Math.min(window.innerHeight - 76, y));
     }
 
     initEvents() {
+      // Close/dismiss thought bubble button
+      this.closeBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.thoughtEl?.classList.add('is-hidden');
+      });
+
+      // Window resize handler to maintain mobile bounds
+      window.addEventListener(
+        'resize',
+        () => {
+          if (window.innerWidth < 768) {
+            this.tx = window.innerWidth - 60;
+            this.ty = window.innerHeight - 72;
+          }
+        },
+        { passive: true },
+      );
+
       // 1. Mouse Eye Tracking
       window.addEventListener(
         'mousemove',
@@ -245,33 +297,39 @@ document.addEventListener('DOMContentLoaded', () => {
         { passive: true },
       );
 
-      // 2. Drag & Drop Mascot
+      // 2. Drag & Drop Mascot (pointer events with tap vs drag discrimination)
       this.bubble.addEventListener('pointerdown', (e) => {
-        this.isDragging = true;
-        this.isPinned = true;
-        this.el.classList.add('is-dragging');
-        this.bubble.setPointerCapture(e.pointerId);
-
+        this.pointerStartPos = { x: e.clientX, y: e.clientY };
+        this.hasPointerMoved = false;
+        this.isDragging = false;
         this.dragOffset.x = e.clientX - this.x;
         this.dragOffset.y = e.clientY - this.y;
+        this.bubble.setPointerCapture(e.pointerId);
       });
 
       this.bubble.addEventListener('pointermove', (e) => {
-        if (!this.isDragging) return;
-        this.x = e.clientX - this.dragOffset.x;
-        this.y = e.clientY - this.dragOffset.y;
-        this.tx = this.x;
-        this.ty = this.y;
+        const dx = Math.abs(e.clientX - this.pointerStartPos.x);
+        const dy = Math.abs(e.clientY - this.pointerStartPos.y);
+        if (dx > 5 || dy > 5) {
+          this.hasPointerMoved = true;
+          this.isDragging = true;
+          this.isPinned = true;
+          this.el.classList.add('is-dragging');
+          this.x = e.clientX - this.dragOffset.x;
+          this.y = e.clientY - this.dragOffset.y;
+          this.tx = this.x;
+          this.ty = this.y;
+        }
       });
 
       const stopDrag = (e) => {
         if (this.isDragging) {
           this.isDragging = false;
           this.el.classList.remove('is-dragging');
-          try {
-            this.bubble.releasePointerCapture(e.pointerId);
-          } catch {}
         }
+        try {
+          this.bubble.releasePointerCapture(e.pointerId);
+        } catch {}
       };
       this.bubble.addEventListener('pointerup', stopDrag);
       this.bubble.addEventListener('pointercancel', stopDrag);
@@ -285,9 +343,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1500);
       });
 
-      // 4. Click to Simulate Voice Command Demo
-      this.bubble.addEventListener('click', (e) => {
-        if (this.isDragging) return;
+      // 4. Click / Tap to Simulate Voice Command Demo
+      this.bubble.addEventListener('click', () => {
+        if (this.hasPointerMoved) return;
+        if (this.thoughtEl?.classList.contains('is-hidden')) {
+          this.thoughtEl.classList.remove('is-hidden');
+        }
         this.simulateVoiceSession();
       });
     }
@@ -348,18 +409,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
           companionController?.setMode(mode, thought);
 
-          // Position companion intelligently based on section
-          const sectionId = entry.target.id;
-          if (sectionId === 'hero') {
-            companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight - 96);
-          } else if (sectionId === 'features') {
-            companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight / 2 - 28);
-          } else if (sectionId === 'how-it-works') {
-            companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight * 0.6);
-          } else if (sectionId === 'privacy') {
-            companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight * 0.4);
-          } else if (entry.target.classList.contains('site-footer')) {
-            companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight - 90);
+          // Position companion intelligently based on section and viewport
+          const isMobile = window.innerWidth < 768;
+          if (isMobile) {
+            companionController?.setTargetPosition(window.innerWidth - 60, window.innerHeight - 72);
+          } else {
+            const sectionId = entry.target.id;
+            if (sectionId === 'hero') {
+              companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight - 96);
+            } else if (sectionId === 'features') {
+              companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight / 2 - 28);
+            } else if (sectionId === 'how-it-works') {
+              companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight * 0.6);
+            } else if (sectionId === 'privacy') {
+              companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight * 0.4);
+            } else if (entry.target.classList.contains('site-footer')) {
+              companionController?.setTargetPosition(window.innerWidth - 84, window.innerHeight - 90);
+            }
           }
         }
       });
@@ -400,13 +466,13 @@ document.addEventListener('DOMContentLoaded', () => {
       { passive: true },
     );
 
-    // Mock Automation Nodes (Trigger -> Actions -> Condition)
+    // Mock Automation Nodes - placed in peripheral side gutters so center content stays unobstructed
     const nodes = [
-      { id: 'trigger', label: 'Webhook', xRatio: 0.16, yRatio: 0.28, color: '#5DCAA5' },
-      { id: 'js', label: 'JS Code', xRatio: 0.42, yRatio: 0.24, color: '#38BDF8' },
-      { id: 'filter', label: 'Condition', xRatio: 0.65, yRatio: 0.32, color: '#AFA9EC' },
-      { id: 'slack', label: 'Slack Alert', xRatio: 0.84, yRatio: 0.22, color: '#EF9F27' },
-      { id: 'db', label: 'Postgres', xRatio: 0.82, yRatio: 0.44, color: '#97C459' },
+      { id: 'trigger', label: 'Webhook', xRatio: 0.08, yRatio: 0.22, color: '#5DCAA5' },
+      { id: 'js', label: 'JS Code', xRatio: 0.12, yRatio: 0.58, color: '#38BDF8' },
+      { id: 'filter', label: 'Condition', xRatio: 0.88, yRatio: 0.20, color: '#AFA9EC' },
+      { id: 'slack', label: 'Slack Alert', xRatio: 0.90, yRatio: 0.48, color: '#EF9F27' },
+      { id: 'db', label: 'Postgres', xRatio: 0.86, yRatio: 0.74, color: '#97C459' },
     ];
 
     const connections = [
@@ -504,34 +570,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-      // Draw Automation Node Badges
-      coords.forEach((node) => {
-        const w = 92;
-        const h = 26;
-        const r = 13;
+      // Draw Automation Node Badges on desktop & tablet (keep mobile canvas purely ambient to avoid text clashes)
+      if (width >= 768) {
+        coords.forEach((node) => {
+          const w = 92;
+          const h = 26;
+          const r = 13;
 
-        // Pill background
-        ctx.beginPath();
-        ctx.roundRect(node.x - w / 2, node.y - h / 2, w, h, r);
-        ctx.fillStyle = 'rgba(18, 25, 27, 0.75)';
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
+          // Pill background
+          ctx.beginPath();
+          ctx.roundRect(node.x - w / 2, node.y - h / 2, w, h, r);
+          ctx.fillStyle = 'rgba(18, 25, 27, 0.75)';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
 
-        // Dot
-        ctx.beginPath();
-        ctx.arc(node.x - w / 2 + 13, node.y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = node.color;
-        ctx.fill();
+          // Dot
+          ctx.beginPath();
+          ctx.arc(node.x - w / 2 + 13, node.y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = node.color;
+          ctx.fill();
 
-        // Label
-        ctx.fillStyle = 'rgba(241, 245, 249, 0.85)';
-        ctx.font = '500 11px system-ui, sans-serif';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(node.label, node.x - w / 2 + 22, node.y + 0.5);
-      });
+          // Label
+          ctx.fillStyle = 'rgba(241, 245, 249, 0.85)';
+          ctx.font = '500 11px system-ui, sans-serif';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(node.label, node.x - w / 2 + 22, node.y + 0.5);
+        });
+      }
 
       requestAnimationFrame(animate);
     }
