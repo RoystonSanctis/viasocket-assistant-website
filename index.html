@@ -8,7 +8,22 @@
   <meta name="description"
     content="SOCKET is an on-canvas assistant that plans, configures, tests, and refines your viaSocket workflows using voice and conversation.">
   <link rel="icon" type="image/png" href="assets/icon-128.png">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('viasocket_theme');
+        var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var setting = (stored === 'light' || stored === 'dark' || stored === 'system') ? stored : 'system';
+        var resolved = setting === 'system' ? (systemDark ? 'dark' : 'light') : setting;
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-setting', setting);
+        var meta = document.querySelector('meta[name="color-scheme"]');
+        if (meta) meta.content = resolved;
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 
 <body>
@@ -72,6 +87,23 @@
         <a href="#privacy" class="nav-link-item">Privacy</a>
         <a href="#faq" class="nav-link-item">FAQ</a>
         <div class="mobile-nav-extras">
+          <div class="mobile-theme-row">
+            <span class="mobile-theme-label">Theme</span>
+            <div class="theme-segmented-control" role="radiogroup" aria-label="Theme selector">
+              <button type="button" class="segment-btn" data-theme-val="light" role="radio" aria-checked="false" title="Light theme">
+                <svg class="icon-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <span>Light</span>
+              </button>
+              <button type="button" class="segment-btn" data-theme-val="dark" role="radio" aria-checked="false" title="Dark theme">
+                <svg class="icon-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <span>Dark</span>
+              </button>
+              <button type="button" class="segment-btn active" data-theme-val="system" role="radio" aria-checked="true" title="System theme">
+                <svg class="icon-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                <span>System</span>
+              </button>
+            </div>
+          </div>
           <button id="btn-replay-intro-mobile" class="btn btn-ghost mobile-extra-btn" title="Replay intro animation">
             <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             <span>Replay Intro Animation</span>
@@ -88,6 +120,53 @@
       </nav>
 
       <div class="nav-actions">
+        <!-- Theme Switcher Dropdown -->
+        <div class="theme-switch-wrapper" id="theme-switch-wrapper">
+          <button id="theme-toggle-btn" class="btn btn-ghost theme-toggle-btn" type="button"
+            aria-label="Switch theme (currently System)" aria-haspopup="menu" aria-expanded="false" title="Switch theme">
+            <span class="theme-btn-icon" aria-hidden="true">
+              <svg class="icon-theme icon-theme-system" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              <svg class="icon-theme icon-theme-light" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+              <svg class="icon-theme icon-theme-dark" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </span>
+            <span class="theme-btn-label desktop-only-text">Theme</span>
+            <svg class="icon-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="theme-dropdown-menu" id="theme-dropdown-menu" role="menu" aria-label="Select color theme" hidden>
+            <button class="theme-option" role="menuitemradio" aria-checked="false" data-theme-val="light" type="button">
+              <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              <span class="option-label">Light</span>
+              <svg class="check-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <button class="theme-option" role="menuitemradio" aria-checked="false" data-theme-val="dark" type="button">
+              <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <span class="option-label">Dark</span>
+              <svg class="check-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <button class="theme-option active" role="menuitemradio" aria-checked="true" data-theme-val="system" type="button">
+              <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span class="option-label">System</span>
+              <svg class="check-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+        </div>
+
         <button id="btn-replay-intro" class="btn btn-ghost btn-replay desktop-only" title="Replay SOCKET intro animation"
           aria-label="Replay SOCKET intro animation">
           <svg class="icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>

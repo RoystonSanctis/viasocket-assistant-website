@@ -74,6 +74,158 @@ document.addEventListener('DOMContentLoaded', () => {
     navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
 
+  // =========================================================================
+  // Theme Switcher Controller (Light, Dark, System)
+  // Supports local persistence, system media queries, cross-tab sync & a11y
+  // =========================================================================
+  const themeToggleBtn = document.getElementById('theme-toggle-btn');
+  const themeDropdown = document.getElementById('theme-dropdown-menu');
+  const themeOptions = document.querySelectorAll('.theme-option');
+  const segmentBtns = document.querySelectorAll('.segment-btn');
+  const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+  const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function getSavedSetting() {
+    try {
+      const saved = localStorage.getItem('viasocket_theme');
+      if (saved === 'light' || saved === 'dark' || saved === 'system') return saved;
+    } catch (e) {}
+    return 'system';
+  }
+
+  function resolveEffectiveTheme(setting) {
+    if (setting === 'system') {
+      return mediaQueryDark.matches ? 'dark' : 'light';
+    }
+    return setting;
+  }
+
+  function applyTheme(setting, save = true) {
+    const effective = resolveEffectiveTheme(setting);
+    document.documentElement.setAttribute('data-theme', effective);
+    document.documentElement.setAttribute('data-theme-setting', setting);
+    if (colorSchemeMeta) {
+      colorSchemeMeta.content = effective;
+    }
+
+    if (save) {
+      try {
+        localStorage.setItem('viasocket_theme', setting);
+      } catch (e) {}
+    }
+
+    // Update Desktop Dropdown
+    themeOptions.forEach((opt) => {
+      const val = opt.getAttribute('data-theme-val');
+      const isMatch = val === setting;
+      opt.classList.toggle('active', isMatch);
+      opt.setAttribute('aria-checked', isMatch ? 'true' : 'false');
+    });
+
+    // Update Mobile Segmented Control
+    segmentBtns.forEach((btn) => {
+      const val = btn.getAttribute('data-theme-val');
+      const isMatch = val === setting;
+      btn.classList.toggle('active', isMatch);
+      btn.setAttribute('aria-checked', isMatch ? 'true' : 'false');
+    });
+
+    // Update Trigger Button accessibility label
+    if (themeToggleBtn) {
+      const cap = setting.charAt(0).toUpperCase() + setting.slice(1);
+      themeToggleBtn.setAttribute('aria-label', `Switch theme (currently ${cap})`);
+      themeToggleBtn.setAttribute('title', `Switch theme (currently ${cap})`);
+    }
+  }
+
+  function openThemeMenu() {
+    if (!themeDropdown) return;
+    themeDropdown.removeAttribute('hidden');
+    themeToggleBtn?.setAttribute('aria-expanded', 'true');
+    const activeOpt = themeDropdown.querySelector('.theme-option.active') || themeDropdown.querySelector('.theme-option');
+    activeOpt?.focus();
+  }
+
+  function closeThemeMenu(returnFocus = true) {
+    if (!themeDropdown || themeDropdown.hasAttribute('hidden')) return;
+    themeDropdown.setAttribute('hidden', '');
+    themeToggleBtn?.setAttribute('aria-expanded', 'false');
+    if (returnFocus) {
+      themeToggleBtn?.focus();
+    }
+  }
+
+  themeToggleBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isExpanded = themeToggleBtn.getAttribute('aria-expanded') === 'true';
+    if (isExpanded) {
+      closeThemeMenu(false);
+    } else {
+      openThemeMenu();
+    }
+  });
+
+  themeOptions.forEach((opt) => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const val = opt.getAttribute('data-theme-val');
+      if (val) {
+        applyTheme(val, true);
+        closeThemeMenu(true);
+      }
+    });
+  });
+
+  segmentBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const val = btn.getAttribute('data-theme-val');
+      if (val) {
+        applyTheme(val, true);
+      }
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!themeDropdown?.hasAttribute('hidden') && !e.target.closest('#theme-switch-wrapper')) {
+      closeThemeMenu(false);
+    }
+  });
+
+  themeDropdown?.addEventListener('keydown', (e) => {
+    const opts = Array.from(themeOptions);
+    const currentIndex = opts.indexOf(document.activeElement);
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeThemeMenu(true);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % opts.length;
+      opts[nextIndex].focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevIndex = (currentIndex - 1 + opts.length) % opts.length;
+      opts[prevIndex].focus();
+    } else if (e.key === 'Tab') {
+      closeThemeMenu(false);
+    }
+  });
+
+  mediaQueryDark.addEventListener('change', () => {
+    const currentSetting = document.documentElement.getAttribute('data-theme-setting') || getSavedSetting();
+    if (currentSetting === 'system') {
+      applyTheme('system', false);
+    }
+  });
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'viasocket_theme' && e.newValue) {
+      applyTheme(e.newValue, false);
+    }
+  });
+
+  applyTheme(getSavedSetting(), false);
+
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', function (e) {
       const targetId = this.getAttribute('href');
@@ -482,9 +634,13 @@ document.addEventListener('DOMContentLoaded', () => {
       { from: 2, to: 4, particles: [{ t: 0.75, speed: 0.0032 }] },
     ];
 
+    function isDarkMode() {
+      return document.documentElement.getAttribute('data-theme') !== 'light';
+    }
+
     function drawDotGrid() {
       const step = 42;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+      ctx.fillStyle = isDarkMode() ? 'rgba(255, 255, 255, 0.035)' : 'rgba(15, 23, 42, 0.045)';
       for (let x = 0; x < width; x += step) {
         for (let y = 0; y < height; y += step) {
           ctx.beginPath();
@@ -519,6 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       ctx.clearRect(0, 0, width, height);
+      const dark = isDarkMode();
 
       // Mouse Parallax Lerp
       mouse.x += (mouse.tx - mouse.x) * 0.05;
@@ -548,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.beginPath();
         ctx.moveTo(p0.x, p0.y);
         ctx.bezierCurveTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
-        ctx.strokeStyle = 'rgba(93, 202, 165, 0.12)';
+        ctx.strokeStyle = dark ? 'rgba(93, 202, 165, 0.12)' : 'rgba(16, 185, 129, 0.22)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -562,9 +719,9 @@ document.addEventListener('DOMContentLoaded', () => {
           // Glow
           ctx.beginPath();
           ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(93, 202, 165, 0.7)';
-          ctx.shadowColor = '#5DCAA5';
-          ctx.shadowBlur = 10;
+          ctx.fillStyle = dark ? 'rgba(93, 202, 165, 0.7)' : 'rgba(5, 150, 105, 0.85)';
+          ctx.shadowColor = dark ? '#5DCAA5' : '#10B981';
+          ctx.shadowBlur = dark ? 10 : 8;
           ctx.fill();
           ctx.shadowBlur = 0;
         });
@@ -580,9 +737,9 @@ document.addEventListener('DOMContentLoaded', () => {
           // Pill background
           ctx.beginPath();
           ctx.roundRect(node.x - w / 2, node.y - h / 2, w, h, r);
-          ctx.fillStyle = 'rgba(18, 25, 27, 0.75)';
+          ctx.fillStyle = dark ? 'rgba(18, 25, 27, 0.75)' : 'rgba(255, 255, 255, 0.92)';
           ctx.fill();
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.strokeStyle = dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.12)';
           ctx.lineWidth = 1;
           ctx.stroke();
 
@@ -593,7 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.fill();
 
           // Label
-          ctx.fillStyle = 'rgba(241, 245, 249, 0.85)';
+          ctx.fillStyle = dark ? 'rgba(241, 245, 249, 0.85)' : 'rgba(15, 23, 42, 0.85)';
           ctx.font = '500 11px system-ui, sans-serif';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
