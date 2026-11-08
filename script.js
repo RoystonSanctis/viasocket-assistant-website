@@ -332,6 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.mode = 'idle';
       this.isPinned = false;
       this.isDragging = false;
+      this.isPointerDown = false;
       this.isSimulatingVoice = false;
 
       // Position (Viewport Coordinates)
@@ -350,7 +351,16 @@ document.addEventListener('DOMContentLoaded', () => {
       this.typingTimer = null;
 
       this.initEvents();
+      this.updateThoughtPosition();
       this.startLoop();
+    }
+
+    updateThoughtPosition() {
+      if (!this.thoughtEl) return;
+      const isTooCloseToLeft = this.x < 130;
+      const isTooCloseToTop = this.y < 170;
+      this.el.classList.toggle('thought-on-right', isTooCloseToLeft);
+      this.el.classList.toggle('thought-on-bottom', isTooCloseToTop);
     }
 
     setMode(mode, thought, force = false) {
@@ -399,11 +409,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // On mobile, anchor at bottom-right corner to prevent covering page content
         this.tx = window.innerWidth - 60;
         this.ty = window.innerHeight - 72;
+        this.updateThoughtPosition();
         return;
       }
       const pad = 24;
       this.tx = Math.max(pad, Math.min(window.innerWidth - 76, x));
       this.ty = Math.max(pad + 70, Math.min(window.innerHeight - 76, y));
+      this.updateThoughtPosition();
     }
 
     initEvents() {
@@ -421,6 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.tx = window.innerWidth - 60;
             this.ty = window.innerHeight - 72;
           }
+          this.updateThoughtPosition();
         },
         { passive: true },
       );
@@ -451,40 +464,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 2. Drag & Drop Mascot (pointer events with tap vs drag discrimination)
       this.bubble.addEventListener('pointerdown', (e) => {
+        if (e.button !== undefined && e.button !== 0) return; // Only primary button
+        this.isPointerDown = true;
         this.pointerStartPos = { x: e.clientX, y: e.clientY };
         this.hasPointerMoved = false;
         this.isDragging = false;
         this.dragOffset.x = e.clientX - this.x;
         this.dragOffset.y = e.clientY - this.y;
-        this.bubble.setPointerCapture(e.pointerId);
+        try {
+          this.bubble.setPointerCapture(e.pointerId);
+        } catch {}
       });
 
       this.bubble.addEventListener('pointermove', (e) => {
-        const dx = Math.abs(e.clientX - this.pointerStartPos.x);
-        const dy = Math.abs(e.clientY - this.pointerStartPos.y);
-        if (dx > 5 || dy > 5) {
+        if (!this.isPointerDown) return; // Guard: hovering without holding mouse must never drag or fling mascot!
+        const dx = e.clientX - this.pointerStartPos.x;
+        const dy = e.clientY - this.pointerStartPos.y;
+        if (Math.hypot(dx, dy) > 4) {
           this.hasPointerMoved = true;
           this.isDragging = true;
           this.isPinned = true;
           this.el.classList.add('is-dragging');
-          this.x = e.clientX - this.dragOffset.x;
-          this.y = e.clientY - this.dragOffset.y;
+
+          const pad = 12;
+          const companionW = 52;
+          const companionH = 52;
+          const maxX = window.innerWidth - companionW - pad;
+          const maxY = window.innerHeight - companionH - pad;
+          const minY = 64; // keep below header navbar
+
+          const rawX = e.clientX - this.dragOffset.x;
+          const rawY = e.clientY - this.dragOffset.y;
+          this.x = Math.max(pad, Math.min(maxX, rawX));
+          this.y = Math.max(minY, Math.min(maxY, rawY));
           this.tx = this.x;
           this.ty = this.y;
+          this.updateThoughtPosition();
         }
       });
 
       const stopDrag = (e) => {
+        if (!this.isPointerDown) return;
+        this.isPointerDown = false;
         if (this.isDragging) {
           this.isDragging = false;
           this.el.classList.remove('is-dragging');
+          this.updateThoughtPosition();
         }
         try {
-          this.bubble.releasePointerCapture(e.pointerId);
+          if (e && e.pointerId && this.bubble.hasPointerCapture(e.pointerId)) {
+            this.bubble.releasePointerCapture(e.pointerId);
+          }
         } catch {}
       };
       this.bubble.addEventListener('pointerup', stopDrag);
       this.bubble.addEventListener('pointercancel', stopDrag);
+      window.addEventListener('pointerup', stopDrag);
+      window.addEventListener('pointercancel', stopDrag);
 
       // 3. Double-click to unpin & resume auto-assist
       this.bubble.addEventListener('dblclick', () => {
@@ -496,8 +532,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // 4. Click / Tap to Simulate Voice Command Demo
-      this.bubble.addEventListener('click', () => {
-        if (this.hasPointerMoved) return;
+      this.bubble.addEventListener('click', (e) => {
+        if (this.hasPointerMoved) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
         if (this.thoughtEl?.classList.contains('is-hidden')) {
           this.thoughtEl.classList.remove('is-hidden');
         }
@@ -539,6 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         this.el.style.transform = `translate3d(${this.x.toFixed(1)}px, ${this.y.toFixed(1)}px, 0)`;
+        this.updateThoughtPosition();
         requestAnimationFrame(render);
       };
       requestAnimationFrame(render);

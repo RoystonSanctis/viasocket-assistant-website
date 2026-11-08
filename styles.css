@@ -1323,7 +1323,7 @@ kbd {
   width: 100vw;
   height: 100dvh;
   z-index: 9999;
-  background-color: var(--accent-primary);
+  background-color: #5dcaa5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1457,8 +1457,13 @@ kbd {
   cursor: grabbing;
 }
 
+.socket-companion.is-dragging .socket-bubble {
+  cursor: grabbing;
+  transform: scale(0.96);
+}
+
 .socket-companion.is-dragging .socket-thought {
-  opacity: 0.2;
+  opacity: 0.15;
   pointer-events: none;
 }
 
@@ -1473,13 +1478,19 @@ kbd {
   justify-content: center;
   gap: 7px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.15s ease;
   user-select: none;
   touch-action: none;
+  cursor: grab;
+}
+
+.socket-bubble:hover {
+  transform: scale(1.04);
 }
 
 .socket-bubble:active {
   transform: scale(0.96);
+  cursor: grabbing;
 }
 
 /* Eyes */
@@ -1556,6 +1567,35 @@ kbd {
   border-right: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
   transform: rotate(45deg);
+}
+
+/* Flipped positions for corner parking */
+.socket-companion.thought-on-right .socket-thought {
+  right: auto;
+  left: -16px;
+  transform-origin: bottom left;
+}
+.socket-companion.thought-on-right .socket-thought::after {
+  right: auto;
+  left: 32px;
+}
+
+.socket-companion.thought-on-bottom .socket-thought {
+  bottom: auto;
+  top: calc(100% + 12px);
+  transform-origin: top right;
+}
+.socket-companion.thought-on-bottom .socket-thought::after {
+  bottom: auto;
+  top: -6px;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.socket-companion.thought-on-right.thought-on-bottom .socket-thought {
+  transform-origin: top left;
 }
 
 .thought-header {
