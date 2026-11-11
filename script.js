@@ -803,4 +803,147 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     requestAnimationFrame(animate);
   }
+
+  // =========================================================================
+  // GitHub Release Version Auto-Detection
+  // Dynamically detects the latest release from GitHub (RoystonSanctis/viasocket-assistant)
+  // and updates the hero badge, release notes link, and all [data-release-version] elements.
+  // Cached in localStorage for 15 minutes to avoid hitting GitHub API rate limits.
+  // =========================================================================
+  const GITHUB_REPO = 'RoystonSanctis/viasocket-assistant';
+  const RELEASE_CACHE_KEY = 'viasocket_latest_release';
+  const RELEASE_CACHE_TTL = 15 * 60 * 1000; // 15 minutes
+
+  function normalizeVersion(tag) {
+    if (!tag || typeof tag !== 'string') return null;
+    const clean = tag.trim();
+    if (!clean) return null;
+    return clean.startsWith('v') ? clean : `v${clean}`;
+  }
+
+  function applyReleaseVersion(version, releaseUrl) {
+    if (!version) return;
+    const norm = normalizeVersion(version);
+    if (!norm) return;
+
+    // 1. Update all elements explicitly requesting the version
+    document.querySelectorAll('[data-release-version]').forEach((el) => {
+      if (el.textContent !== norm) el.textContent = norm;
+    });
+
+    // 2. Update hero badge if present
+    const badge = document.querySelector('[data-release-badge]');
+    if (badge && !badge.querySelector('[data-release-version]')) {
+      badge.textContent = `${norm} now available for Chrome`;
+    }
+
+    // 3. Update footer release notes link and URL if present
+    const releaseLink = document.querySelector('[data-release-link]');
+    if (releaseLink) {
+      if (!releaseLink.querySelector('[data-release-version]')) {
+        releaseLink.textContent = `Release Notes (${norm})`;
+      }
+      if (releaseUrl) {
+        releaseLink.href = releaseUrl;
+      }
+    }
+  }
+
+  async function fetchLatestReleaseFromGitHub() {
+    try {
+      // 1. Try official latest release endpoint
+      const latestRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/latest`, {
+        headers: { Accept: 'application/vnd.github.v3+json' },
+      });
+      if (latestRes.ok) {
+        const data = await latestRes.json();
+        if (data && (data.tag_name || data.name)) {
+          return {
+            version: normalizeVersion(data.tag_name || data.name),
+            url: data.html_url || `https://github.com/${GITHUB_REPO}/releases`,
+          };
+        }
+      }
+
+      // 2. Fallback to /releases?per_page=1 (handles pre-releases or recent drafts)
+      const listRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases?per_page=1`, {
+        headers: { Accept: 'application/vnd.github.v3+json' },
+      });
+      if (listRes.ok) {
+        const list = await listRes.json();
+        if (Array.isArray(list) && list[0] && (list[0].tag_name || list[0].name)) {
+          return {
+            version: normalizeVersion(list[0].tag_name || list[0].name),
+            url: list[0].html_url || `https://github.com/${GITHUB_REPO}/releases`,
+          };
+        }
+      }
+
+      // 3. Fallback to /tags?per_page=1 (if releases aren't published yet)
+      const tagsRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/tags?per_page=1`, {
+        headers: { Accept: 'application/vnd.github.v3+json' },
+      });
+      if (tagsRes.ok) {
+        const tags = await tagsRes.json();
+        if (Array.isArray(tags) && tags[0] && tags[0].name) {
+          const v = normalizeVersion(tags[0].name);
+          return {
+            version: v,
+            url: `https://github.com/${GITHUB_REPO}/releases/tag/${v}`,
+          };
+        }
+      }
+    } catch (err) {
+      console.debug('[ReleaseDetector] Fetch failed:', err);
+    }
+    return null;
+  }
+
+  async function initReleaseAutoDetect() {
+    // Check initial window cache from <head> or localStorage
+    let cached = null;
+    try {
+      if (window.__INITIAL_RELEASE_VERSION__) {
+        cached = {
+          version: window.__INITIAL_RELEASE_VERSION__,
+          url: window.__INITIAL_RELEASE_URL__,
+          timestamp: 0,
+        };
+      } else {
+        const raw = localStorage.getItem(RELEASE_CACHE_KEY);
+        if (raw) cached = JSON.parse(raw);
+      }
+    } catch (e) {}
+
+    // Apply cached version immediately
+    if (cached && cached.version) {
+      applyReleaseVersion(cached.version, cached.url);
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceRefetch = urlParams.has('refetch_version');
+
+    // If cache is fresh and not forced, keep it
+    if (!forceRefetch && cached && cached.timestamp && Date.now() - cached.timestamp < RELEASE_CACHE_TTL) {
+      return;
+    }
+
+    // Fetch fresh release in background
+    const fresh = await fetchLatestReleaseFromGitHub();
+    if (fresh && fresh.version) {
+      applyReleaseVersion(fresh.version, fresh.url);
+      try {
+        localStorage.setItem(
+          RELEASE_CACHE_KEY,
+          JSON.stringify({
+            version: fresh.version,
+            url: fresh.url,
+            timestamp: Date.now(),
+          })
+        );
+      } catch (e) {}
+    }
+  }
+
+  initReleaseAutoDetect();
 });

@@ -20,6 +20,13 @@
         document.documentElement.setAttribute('data-theme-setting', setting);
         var meta = document.querySelector('meta[name="color-scheme"]');
         if (meta) meta.content = resolved;
+
+        // Apply cached GitHub release version immediately to avoid layout shift
+        var cachedRelease = JSON.parse(localStorage.getItem('viasocket_latest_release') || 'null');
+        if (cachedRelease && cachedRelease.version) {
+          window.__INITIAL_RELEASE_VERSION__ = cachedRelease.version;
+          window.__INITIAL_RELEASE_URL__ = cachedRelease.url;
+        }
       } catch (e) {}
     })();
   </script>
@@ -198,7 +205,7 @@
       data-assist-thought="Hi, I'm SOCKET. Let's inspect and build workflows on your canvas.">
       <div class="container hero-content">
         <div class="badge-pill">
-          <span class="badge-text">v0.5.3 now available for Chrome</span>
+          <span class="badge-text" data-release-badge><span data-release-version>v0.5.3</span> now available for Chrome</span>
         </div>
 
         <h1 class="hero-title">
@@ -597,7 +604,7 @@
           <a href="https://github.com/RoystonSanctis/viasocket-assistant" target="_blank"
             rel="noopener noreferrer">GitHub Repository</a>
           <a href="https://github.com/RoystonSanctis/viasocket-assistant/releases" target="_blank"
-            rel="noopener noreferrer">Release Notes (v0.5.3)</a>
+            rel="noopener noreferrer" data-release-link>Release Notes (<span data-release-version>v0.5.3</span>)</a>
           <a href="https://github.com/RoystonSanctis/viasocket-assistant/blob/main/PRIVACY.md" target="_blank"
             rel="noopener noreferrer">Privacy Policy</a>
         </div>
